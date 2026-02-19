@@ -32,29 +32,47 @@ function addDivKey(key) {
   }
 }
 
-function handleEnter() {
+function handleEnter(wordDay) {
   let enteredWord = '';
   for (let i = 0; i < 5; i++) {
     enteredWord += getGridDiv(i, row).innerText;
   }
-  getWord().then((word) => {
-    word = word.toUpperCase();
-    if (word === enteredWord) {
-      console.log('выйграл');
-    } else {
-      console.log('проиграл');
-    }
+  checkWord(enteredWord, wordDay);
+}
 
-    for (let i = 0; i < 5; i++) {
-      if (enteredWord[i] === word[i]) {
-        getGridDiv(i, row).classList.add('the-required-letter');
+function checkWord(enteredWord, wordDay) {
+  for (let i = 0; i < 5; i++) {
+    console.log(wordDay[i] === enteredWord[i]);
+    if (wordDay[i] === enteredWord[i]) {
+      getGridDiv(i, row).classList.add('the-required-letter');
+    } else if (
+      wordDay.indexOf(enteredWord[i]) !== -1 &&
+      !getGridDiv(i, row).classList.contains('the-required-letter')
+    ) {
+      getGridDiv(i, row).classList.add('the-required-letter-in-bad-place');
+    }
+  }
+
+  let resultGame = 0;
+
+  for (let i = 0; i < 5; i++) {
+    for (let j = 0; j < 6; j++) {
+      const grid = document.querySelector(`.game-map-grid`).querySelectorAll('.game-map');
+      const gridCol = grid[i].querySelectorAll('.box')[j];
+      if (gridCol.classList.contains('the-required-letter')) {
+        resultGame++;
+        break;
       }
     }
-    if (getGridDiv(4, row).innerText !== '') {
-      row++;
-      col = 0;
-    }
-  });
+  }
+  if (resultGame === 5) {
+    alert(`Вы выйграли, загаданное слово: ${wordDay}`);
+  }
+
+  if (getGridDiv(4, row).innerText !== '') {
+    row++;
+    col = 0;
+  }
 }
 
 function removeKeyFromDiv() {
@@ -67,12 +85,15 @@ function removeKeyFromDiv() {
   }
 }
 
-function initGame() {
+async function initGame() {
+  let wordDay = await getWord();
+  wordDay = wordDay.toUpperCase();
+  console.log(wordDay);
   document.addEventListener('keydown', function (event) {
     if (!isLetter(event.key)) {
       switch (event.key) {
         case 'Enter':
-          handleEnter();
+          handleEnter(wordDay);
           break;
         case 'Backspace':
           removeKeyFromDiv();
