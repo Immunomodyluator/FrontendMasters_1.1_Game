@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Тест клавиатуры</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+      }
+      #log {
+        margin-top: 20px;
+        padding: 10px;
+        border: 1px solid #ccc;
+        min-height: 200px;
+        background: #f5f5f5;
+      }
+      .instruction {
+        padding: 10px;
+        background: #e3f2fd;
+        margin-bottom: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="instruction">
+      <h2>🧪 Тест клавиатуры</h2>
+      <p>Нажмите любую клавишу на клавиатуре. Информация появится ниже.</p>
+    </div>
+
+    <h3>Лог событий:</h3>
+    <div id="log"></div>
+
+    <script>
+      const logDiv = document.getElementById('log');
+
+      function addLog(message) {
+        const time = new Date().toLocaleTimeString();
+        logDiv.innerHTML += `<div>[${time}] ${message}</div>`;
+        logDiv.scrollTop = logDiv.scrollHeight;
+      }
+
+      addLog('✅ Скрипт загружен');
+      addLog('⏳ Ожидание нажатий клавиш...');
+
+      document.addEventListener('keydown', function (event) {
+        addLog(`🔑 Клавиша: "${event.key}" (код: ${event.keyCode})`);
+      });
+
+      window.addEventListener('load', function () {
+        addLog('✅ Страница полностью загружена');
+      });
+    </script>
+  </body>
+</html>
